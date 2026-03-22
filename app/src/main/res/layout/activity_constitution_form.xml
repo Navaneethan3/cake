@@ -1,0 +1,1507 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="Create Constitution"
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="@drawable/ic_back" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
+
+            <!-- General Info -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="GENERAL INFORMATION"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="Name of the Country">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editCountryName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapWords" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Chapter 1 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CHAPTER ONE: GENERAL PRINCIPLES"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Article 1: Form of Government"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupFormOfGovernment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioConstitutionalMonarchy"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Constitutional Monarchy (Monarch is ceremonial head of state)"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioParliamentaryRepublic"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Parliamentary Republic (President is ceremonial; Prime Minister governs)"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioPresidentialRepublic"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Presidential Republic (President is both head of state and head of government)"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioSemiPresidential"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Semi-Presidential Republic (President and Prime Minister share executive power)"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Question 1.2: Source of State Authority"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupSourceOfAuthority"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioMonarchDivine"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="The Monarch by divine right"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioPeople"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="The people, through democratic processes"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioSingleParty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="A single political party representing the vanguard of the people"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioReligious"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Religious authority as interpreted by clerical institutions"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Question 1.3: General Principles (Select at least 1)"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxSecular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="The state is secular (no state religion; freedom of conscience)"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxOfficialReligion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="The state has an official religion but guarantees minority rights"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxSocial"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="The state is social (committed to welfare and reducing inequality)"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxConstitutionSupreme"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="The constitution is the supreme law of the land"
+                        android:padding="8dp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Chapter 2 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CHAPTER TWO: FUNDAMENTAL RIGHTS"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Question 2.1: Non-Nullable Rights (Select at least 2)"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxRightToLife"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Right to life"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxNoTorture"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Prohibition of torture and inhumane treatment"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxNoSlavery"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Prohibition of slavery and forced labor"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxFairTrial"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Right to a fair and speedy trial"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxNoExPostFacto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Protection against retroactive criminal laws"
+                        android:padding="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Question 2.2: Suspendable Freedoms (Select at least 1)"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxFreeSpeech"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Freedom of speech and expression"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxAssembly"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Freedom of peaceful assembly"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxAssociation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Freedom of association"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxMovement"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Freedom of movement"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxReligion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Freedom of religion and conscience"
+                        android:padding="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Question 2.3: Who has authority to suspend freedoms?"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupSuspensionAuthority"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioPresidentAlone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="President alone by decree"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioLegislatureSupermajority"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Legislature by supermajority vote"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioExecutiveWithRatification"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Executive branch with later legislative ratification"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioNoSuspension"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No suspension permitted under any circumstances"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <CheckBox
+                        android:id="@+id/checkboxIncludeDuties"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Include Fundamental Duties for citizens"
+                        android:textStyle="bold"
+                        android:padding="8dp" />
+
+                    <LinearLayout
+                        android:id="@+id/dutiesContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingLeft="16dp">
+
+                        <CheckBox
+                            android:id="@+id/checkboxDutyAbide"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Abide by the constitution and law"
+                            android:padding="8dp" />
+
+                        <CheckBox
+                            android:id="@+id/checkboxDutyDefend"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Defend the country when called upon"
+                            android:padding="8dp" />
+
+                        <CheckBox
+                            android:id="@+id/checkboxDutyTaxes"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Pay taxes and duties"
+                            android:padding="8dp" />
+
+                        <CheckBox
+                            android:id="@+id/checkboxDutyHarmony"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Promote harmony and spirit of common brotherhood"
+                            android:padding="8dp" />
+
+                        <CheckBox
+                            android:id="@+id/checkboxDutyEnvironment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Protect and improve natural environment"
+                            android:padding="8dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Chapter 3 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CHAPTER THREE: STATE SYMBOLS"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Question 3.1: National Flag"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupFlagDetermination"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioFlagInConstitution"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Described in constitution"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioFlagByLaw"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Determined by law"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioFlagTraditional"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Traditional flag"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Question 3.2: Capital City"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupCapitalDetermination"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioCapitalInConstitution"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Designated in constitution"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioCapitalByLaw"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Determined by law"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/capitalNameInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone"
+                        android:hint="Name of Capital City">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editCapitalName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Chapter 4 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CHAPTER FOUR: DIRECTIVE PRINCIPLES"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Question 4.1: State Objectives (Select at least 3)"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxWealthDistribution"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Equitable distribution of wealth"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxFreeEducation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Free compulsory education"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxLivingWage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Living wage for workers"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxInternationalPeace"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Promotion of international peace"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxEnvironment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Protection of environment"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxCottageIndustries"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Promotion of cottage industries"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxSeparateJudiciary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Separation of judiciary from executive"
+                        android:padding="8dp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Chapter 5 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CHAPTER FIVE: STRUCTURE OF GOVERNMENT"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <!-- Section I: Legislature -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Section I: The Legislature"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Structure of Legislature"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupLegislatureStructure"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioUnicameral"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Unicameral (Single house)"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioBicameral"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Bicameral (Two houses)"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Election System"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupElectionSystem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioFPTP"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="First-past-the-post (Plurality)"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioProportional"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Proportional representation"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioMixed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Mixed-member proportional"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Powers of Legislature"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxPowerDeclareWar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Declare war"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxPowerRatifyTreaties"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ratify treaties"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxPowerBudget"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Approve national budget"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxPowerConfirmAppointments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Confirm executive appointments"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxPowerImpeach"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Impeach high officials"
+                        android:padding="8dp" />
+
+                    <!-- Section II: Executive -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:text="Section II: The Executive"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Selection of Head of State (President)"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupPresidentSelection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioDirectElection"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Direct popular vote"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioElectoralCollege"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Electoral college"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioLegislativeElection"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Elected by legislature"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioHereditary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Hereditary succession"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Presidential Terms"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupPresidentTerms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioOneTerm"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="One term only"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioTwoTerms"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Maximum two terms"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioUnlimitedTerms"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Unlimited terms"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioNoTermLimit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No term limit specified"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Appointment of Prime Minister"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupPrimeMinisterAppointment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioPMDirectElection"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Direct election by people"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioPMAppointedByPresident"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Appointed by President (requires leg. confidence)"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioPMAppointedWithoutConfirm"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Appointed by President without confirmation"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioPMElectedByLegislature"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Elected by legislature"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <!-- Section III: Judiciary -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:text="Section III: The Judiciary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Appointment of Judges"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupJudgeAppointment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioJudgePresidentAlone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="President alone"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioJudgePresidentWithConsent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="President with legislative consent"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioJudgeCommission"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Independent Judicial Commission"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioJudgeLegislativeElection"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Elected by legislature"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Judicial Independence Protections"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxJudicialTenure"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Life tenure / Fixed retirement age"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxJudicialSalary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Salary protection (cannot be reduced)"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxJudicialRemoval"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Special removal process (impeachment)"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxJudicialAutonomy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Administrative/Financial autonomy"
+                        android:padding="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Scope of Judicial Review"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupJudicialReview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioReviewFull"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Full judicial review (all laws and acts)"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioReviewLimited"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Limited to fundamental rights"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioReviewNotGranted"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Not explicitly granted"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Chapter 6 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CHAPTER SIX: NATIONAL DEFENSE"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Supreme Commander of Armed Forces"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupSupremeCommander"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioCommanderPresident"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="The President"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioCommanderPrimeMinister"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="The Prime Minister"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioCommanderMinister"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Minister of Defense (Civilian)"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioCommanderMilitary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Senior-most military officer"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Military Restrictions"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxMilitaryNoCivilOffice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Active military cannot hold civil office"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxMilitaryApolitical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Military must be apolitical and loyal to constitution"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxMilitaryWarPower"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="War-making power rests solely with legislature"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxMilitaryNoPoliticalUse"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No use of armed forces for political purposes"
+                        android:padding="8dp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Chapter 7 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CHAPTER SEVEN: ECONOMY AND FINANCE"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Main Economic Principle"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupEconomicPrinciple"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioFreeMarket"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Free-market capitalism"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioMixedEconomy"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Mixed economy"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioStateControlled"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="State-controlled/planned economy"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioCooperative"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Cooperative-based economy"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Economic Policies"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxFreeMovement"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Free movement of goods and services"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxStateOwnership"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="State ownership of natural resources"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxRegulateMonopolies"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="State shall regulate private monopolies"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxSupportCooperatives"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Support for cooperative enterprises"
+                        android:padding="8dp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Chapter 8 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CHAPTER EIGHT: EDUCATION AND CULTURE"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Educational Provisions"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxFreePrimaryEducation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Free compulsory primary education"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxScholarships"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Scholarships for meritorious students"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxNoPoliticalInterference"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No political interference in education"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxPrivateEducation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Private education institutions permitted"
+                        android:padding="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Minimum Education Budget (% of GDP)"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupEducationBudget"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioBudgetNone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No minimum specified"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioBudget5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="At least 5%"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioBudget10"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="At least 10%"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioBudget15"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="At least 15%"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Chapter 9 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CHAPTER NINE: MINORITY RIGHTS"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Minority Protections"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxMinorityCulture"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Right to conserve culture and language"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxMinorityNonDiscrimination"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Protection from all forms of discrimination"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxMinorityRepresentation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Special representation in legislature"
+                        android:padding="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkboxMinorityAutonomy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Regional cultural autonomy"
+                        android:padding="8dp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Chapter 10 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CHAPTER TEN: AMENDMENT AND INTERPRETATION"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Amendment Procedure"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupAmendmentProcedure"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioAmendmentSimple"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Simple majority + presidential approval"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioAmendmentSupermajority"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Supermajority (2/3 or 3/4) + presidential approval"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioAmendmentSupermajorityReferendum"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Supermajority + national referendum"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioAmendmentSupermajorityStates"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Supermajority + ratification by states/provinces"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Final Authority on Interpretation"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupInterpretationAuthority"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radioInterpretLegislature"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="The Legislature"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioInterpretExecutive"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="The Executive"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioInterpretCourt"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="The Highest Court (Supreme Court)"
+                            android:padding="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/radioInterpretCouncil"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Special Constitutional Council"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/buttonSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="FINAL SUBMIT - SAVE CONSTITUTION"
+        android:textSize="16sp"
+        android:padding="16dp"
+        android:backgroundTint="?attr/colorPrimary" />
+
+</LinearLayout>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/textTerms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TERMS AND CONDITIONS \n\n copyright (C) 2026  green pixel \n\nThis program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.\n\nYou should have received a copy of the GNU Affero General Public License along with this program.  If not, see https://www.gnu.org/licenses/."
+            android:textSize="14sp"
+            android:textColor="#333333"
+            android:autoLink="web"
+            android:linksClickable="true" />
+    </ScrollView>
+
+    <CheckBox
+        android:id="@+id/checkAgree"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="I agree to the Terms and Conditions" />
+
+    <Button
+        android:id="@+id/btnAccept"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Accept"
+        android:enabled="false"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>
