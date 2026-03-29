@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.constitutionmaker.databinding.ActivityMainBinding
 import com.example.constitutionmaker.database.ConstitutionDatabase
 import com.example.constitutionmaker.database.ConstitutionEntity
+import com.example.constitutionmaker.models.ConstitutionData
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -83,6 +85,7 @@ class ConstitutionHistoryAdapter(
 ) : androidx.recyclerview.widget.RecyclerView.Adapter<ConstitutionHistoryAdapter.ViewHolder>() {
 
     private var items = listOf<ConstitutionEntity>()
+    private val gson = Gson()
 
     fun submitList(list: List<ConstitutionEntity>) {
         items = list
@@ -105,7 +108,19 @@ class ConstitutionHistoryAdapter(
         androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: ConstitutionEntity) {
-            itemView.findViewById<android.widget.TextView>(R.id.textName).text = item.name
+            val data = try {
+                gson.fromJson(item.jsonData, ConstitutionData::class.java)
+            } catch (e: Exception) {
+                null
+            }
+            
+            val displayName = if (data != null && data.registerNumber.isNotBlank()) {
+                data.registerNumber
+            } else {
+                item.name
+            }
+
+            itemView.findViewById<android.widget.TextView>(R.id.textName).text = displayName
             itemView.findViewById<android.widget.TextView>(R.id.textDate).text =
                 java.text.SimpleDateFormat("dd MMM yyyy, HH:mm", java.util.Locale.getDefault())
                     .format(java.util.Date(item.dateCreated))

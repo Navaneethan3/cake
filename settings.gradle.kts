@@ -22,6 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "cake"
+rootProject.name = "constitutionMaker"
 include(":app")
- 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -20,8 +21,6 @@ class ConstitutionFormActivity : AppCompatActivity() {
     private lateinit var constitutionData: ConstitutionData
     private val gson = Gson()
     private val database by lazy { ConstitutionDatabase.getDatabase(this) }
-    private var registerNumber: String = ""
-    private var username: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +30,10 @@ class ConstitutionFormActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        registerNumber = intent.getStringExtra("register_number") ?: ""
-        username = intent.getStringExtra("username") ?: ""
-
-        constitutionData = ConstitutionData()
-        constitutionData.creatorName = username
-        constitutionData.registerNumber = registerNumber
+        constitutionData = ConstitutionData().apply {
+            creatorName = intent.getStringExtra("username") ?: ""
+            registerNumber = intent.getStringExtra("register_number") ?: ""
+        }
 
         setupScrollableViews()
         setupSubmitButton()
@@ -58,411 +55,515 @@ class ConstitutionFormActivity : AppCompatActivity() {
 
     private fun setupGeneralInfo() {
         binding.editCountryName.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { 
+                constitutionData.countryName = s.toString()
+                binding.tvChapter2Desc.text = "all citizens of the ${if (s.isNullOrBlank()) "[country name]" else s} shall have equal rights, freedoms and duties unless suspended by law."
+            }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                constitutionData.countryName = s.toString()
-            }
         })
     }
 
     private fun setupChapter1() {
-        binding.radioGroupFormOfGovernment.setOnCheckedChangeListener { _, checkedId ->
+        binding.rgFormOfGov.setOnCheckedChangeListener { _, checkedId ->
             constitutionData.formOfGovernment = when (checkedId) {
-                R.id.radioConstitutionalMonarchy -> "Constitutional Monarchy"
-                R.id.radioParliamentaryRepublic -> "Parliamentary Republic"
-                R.id.radioPresidentialRepublic -> "Presidential Republic"
-                R.id.radioSemiPresidential -> "Semi-Presidential Republic"
+                R.id.rbFormA -> "Constitutional Monarchy"
+                R.id.rbFormB -> "Parliamentary Republic"
+                R.id.rbFormC -> "Presidential Republic"
+                R.id.rbFormD -> "Semi-Presidential Republic"
                 else -> ""
             }
         }
 
-        binding.radioGroupSourceOfAuthority.setOnCheckedChangeListener { _, checkedId ->
+        binding.rgSourceAuth.setOnCheckedChangeListener { _, checkedId ->
             constitutionData.sourceOfAuthority = when (checkedId) {
-                R.id.radioMonarchDivine -> "The Monarch by divine right"
-                R.id.radioPeople -> "The people, through democratic processes"
-                R.id.radioSingleParty -> "A single political party"
-                R.id.radioReligious -> "Religious authority"
+                R.id.rbSourceA -> "The Monarch by divine right"
+                R.id.rbSourceB -> "The people, through democratic processes"
+                R.id.rbSourceC -> "The union of the stats"
+                R.id.rbSourceD -> "Rich history and culture"
+                R.id.rbSourceE -> "Treaties and Conventions"
                 else -> ""
             }
+            binding.tilTreatyName.visibility = if (checkedId == R.id.rbSourceE) View.VISIBLE else View.GONE
         }
 
-        binding.checkboxSecular.setOnCheckedChangeListener { _, isChecked -> constitutionData.secular = isChecked }
-        binding.checkboxOfficialReligion.setOnCheckedChangeListener { _, isChecked -> constitutionData.officialReligion = isChecked }
-        binding.checkboxSocial.setOnCheckedChangeListener { _, isChecked -> constitutionData.social = isChecked }
-        binding.checkboxConstitutionSupreme.setOnCheckedChangeListener { _, isChecked -> constitutionData.constitutionSupreme = isChecked }
+        binding.editTreatyName.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { constitutionData.treatyName = s.toString() }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        binding.cbSocial.setOnCheckedChangeListener { _, isChecked -> constitutionData.isSocial = isChecked }
+
+        val principlesList = mutableListOf<String>()
+        val pWatcher = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+            val p = buttonView.text.toString().substringAfter(". ")
+            if (isChecked) principlesList.add(p) else principlesList.remove(p)
+            constitutionData.statePrinciples = principlesList.toList()
+        }
+        binding.cbP1.setOnCheckedChangeListener(pWatcher)
+        binding.cbP2.setOnCheckedChangeListener(pWatcher)
+        binding.cbP3.setOnCheckedChangeListener(pWatcher)
+        binding.cbP4.setOnCheckedChangeListener(pWatcher)
+        binding.cbP5.setOnCheckedChangeListener(pWatcher)
     }
 
     private fun setupChapter2() {
-        val nonNullableRightsList = mutableListOf<String>()
-        binding.checkboxRightToLife.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) nonNullableRightsList.add("Right to life") else nonNullableRightsList.remove("Right to life")
-            constitutionData.nonNullableRights = nonNullableRightsList.toList()
-        }
-        binding.checkboxNoTorture.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) nonNullableRightsList.add("Prohibition of torture") else nonNullableRightsList.remove("Prohibition of torture")
-            constitutionData.nonNullableRights = nonNullableRightsList.toList()
-        }
-        binding.checkboxNoSlavery.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) nonNullableRightsList.add("Prohibition of slavery") else nonNullableRightsList.remove("Prohibition of slavery")
-            constitutionData.nonNullableRights = nonNullableRightsList.toList()
-        }
-        binding.checkboxFairTrial.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) nonNullableRightsList.add("Right to fair trial") else nonNullableRightsList.remove("Right to fair trial")
-            constitutionData.nonNullableRights = nonNullableRightsList.toList()
-        }
-        binding.checkboxNoExPostFacto.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) nonNullableRightsList.add("Non-retroactivity of criminal laws") else nonNullableRightsList.remove("Non-retroactivity of criminal laws")
-            constitutionData.nonNullableRights = nonNullableRightsList.toList()
+        binding.rgRightsSource.setOnCheckedChangeListener { _, checkedId ->
+            if (checkedId == R.id.rbRightsConstitutional) {
+                constitutionData.rightsSource = "Constitutional"
+                setViewGroupEnabled(binding.containerB, true)
+                setViewGroupEnabled(binding.containerA, false)
+                binding.containerB.alpha = 1.0f
+                binding.containerA.alpha = 0.5f
+            } else if (checkedId == R.id.rbRightsNatural) {
+                constitutionData.rightsSource = "Natural"
+                setViewGroupEnabled(binding.containerB, false)
+                setViewGroupEnabled(binding.containerA, true)
+                binding.containerB.alpha = 0.5f
+                binding.containerA.alpha = 1.0f
+            }
         }
 
-        val suspendableFreedomsList = mutableListOf<String>()
-        binding.checkboxFreeSpeech.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) suspendableFreedomsList.add("Freedom of speech") else suspendableFreedomsList.remove("Freedom of speech")
-            constitutionData.suspendableFreedoms = suspendableFreedomsList.toList()
+        // CONSTITUTIONAL (B)
+        val constNNList = mutableListOf<String>()
+        val cNNWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val r = bv.text.toString().substringAfter(". ")
+            if (isChecked) constNNList.add(r) else constNNList.remove(r)
+            constitutionData.constNonNullableRights = constNNList.toList()
         }
-        binding.checkboxAssembly.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) suspendableFreedomsList.add("Freedom of assembly") else suspendableFreedomsList.remove("Freedom of assembly")
-            constitutionData.suspendableFreedoms = suspendableFreedomsList.toList()
-        }
-        binding.checkboxAssociation.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) suspendableFreedomsList.add("Freedom of association") else suspendableFreedomsList.remove("Freedom of association")
-            constitutionData.suspendableFreedoms = suspendableFreedomsList.toList()
-        }
-        binding.checkboxMovement.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) suspendableFreedomsList.add("Freedom of movement") else suspendableFreedomsList.remove("Freedom of movement")
-            constitutionData.suspendableFreedoms = suspendableFreedomsList.toList()
-        }
-        binding.checkboxReligion.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) suspendableFreedomsList.add("Freedom of religion") else suspendableFreedomsList.remove("Freedom of religion")
-            constitutionData.suspendableFreedoms = suspendableFreedomsList.toList()
-        }
+        binding.cbB11A.setOnCheckedChangeListener(cNNWatcher)
+        binding.cbB11B.setOnCheckedChangeListener(cNNWatcher)
+        binding.cbB11C.setOnCheckedChangeListener(cNNWatcher)
+        binding.cbB11D.setOnCheckedChangeListener(cNNWatcher)
+        binding.cbB11E.setOnCheckedChangeListener(cNNWatcher)
+        binding.cbB11F.setOnCheckedChangeListener(cNNWatcher)
+        binding.cbB11G.setOnCheckedChangeListener(cNNWatcher)
 
-        binding.radioGroupSuspensionAuthority.setOnCheckedChangeListener { _, checkedId ->
+        val constSList = mutableListOf<String>()
+        binding.cbB12A.setOnCheckedChangeListener { _, isChecked ->
+            val r = "Right to elect and to be elected according to law."
+            if (isChecked) constSList.add(r) else constSList.remove(r)
+            constitutionData.constSuspendableRights = constSList.toList()
+            binding.tilVotingAgeB.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
+        binding.editVotingAgeB.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { constitutionData.constVotingAge = s.toString() }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+        binding.cbB12C.setOnCheckedChangeListener { _, isChecked ->
+            val r = "Right to work"
+            if (isChecked) constSList.add(r) else constSList.remove(r)
+            constitutionData.constSuspendableRights = constSList.toList()
+            binding.cbB12D.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
+        val cSWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val r = bv.text.toString().substringAfter(". ")
+            if (isChecked) constSList.add(r) else constSList.remove(r)
+            constitutionData.constSuspendableRights = constSList.toList()
+        }
+        binding.cbB12B.setOnCheckedChangeListener(cSWatcher)
+        binding.cbB12D.setOnCheckedChangeListener(cSWatcher)
+        binding.cbB12E.setOnCheckedChangeListener(cSWatcher)
+        binding.cbB12F.setOnCheckedChangeListener(cSWatcher)
+        binding.cbB12G.setOnCheckedChangeListener(cSWatcher)
+        binding.cbB12H.setOnCheckedChangeListener(cSWatcher)
+        binding.cbB12I.setOnCheckedChangeListener(cSWatcher)
+        binding.cbB12J.setOnCheckedChangeListener(cSWatcher)
+
+        val constFList = mutableListOf<String>()
+        val cFWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val f = bv.text.toString().substringAfter(". ")
+            if (isChecked) constFList.add(f) else constFList.remove(f)
+            constitutionData.constSuspendableFreedoms = constFList.toList()
+        }
+        binding.cbB21A.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21B.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21C.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21D.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21E.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21F.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21G.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21H.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21I.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21J.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21K.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21L.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21M.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21N.setOnCheckedChangeListener(cFWatcher)
+        binding.cbB21O.setOnCheckedChangeListener(cFWatcher)
+
+        binding.rgSuspAuth.setOnCheckedChangeListener { _, checkedId ->
             constitutionData.suspensionAuthority = when (checkedId) {
-                R.id.radioPresidentAlone -> "President alone"
-                R.id.radioLegislatureSupermajority -> "Legislature"
-                R.id.radioExecutiveWithRatification -> "Executive"
-                R.id.radioNoSuspension -> "No suspension"
+                R.id.rbSuspA -> "The President alone"
+                R.id.rbSuspB -> "The Legislature"
+                R.id.rbSuspC -> "The Executive"
+                R.id.rbSuspD -> "Suspension not permitted"
                 else -> ""
             }
         }
 
-        binding.checkboxIncludeDuties.setOnCheckedChangeListener { _, isChecked ->
-            constitutionData.includeFundamentalDuties = isChecked
-            binding.dutiesContainer.visibility = if (isChecked) View.VISIBLE else View.GONE
+        // NATURAL (A)
+        val natNNList = mutableListOf<String>()
+        val nNNWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val r = bv.text.toString().substringAfter(". ")
+            if (isChecked) natNNList.add(r) else natNNList.remove(r)
+            constitutionData.naturalRightsNonNullable = natNNList.toList()
         }
+        binding.cbA11A.setOnCheckedChangeListener(nNNWatcher)
+        binding.cbA11B.setOnCheckedChangeListener(nNNWatcher)
+        binding.cbA11C.setOnCheckedChangeListener(nNNWatcher)
+        binding.cbA11D.setOnCheckedChangeListener(nNNWatcher)
+        binding.cbA11E.setOnCheckedChangeListener(nNNWatcher)
+        binding.cbA11F.setOnCheckedChangeListener(nNNWatcher)
+        binding.cbA11G.setOnCheckedChangeListener(nNNWatcher)
 
+        val natOList = mutableListOf<String>()
+        binding.cbA11H.setOnCheckedChangeListener { _, isChecked ->
+            val r = "Right to elect and to be elected"
+            if (isChecked) natOList.add(r) else natOList.remove(r)
+            constitutionData.naturalRightsOptional = natOList.toList()
+            binding.tilVotingAgeA.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
+        binding.editVotingAgeA.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { constitutionData.naturalVotingAge = s.toString() }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+        binding.cbA11J.setOnCheckedChangeListener { _, isChecked ->
+            val r = "Right to work"
+            if (isChecked) natOList.add(r) else natOList.remove(r)
+            constitutionData.naturalRightsOptional = natOList.toList()
+            binding.cbA11K.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
+        val nOWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val r = bv.text.toString().substringAfter(". ")
+            if (isChecked) natOList.add(r) else natOList.remove(r)
+            constitutionData.naturalRightsOptional = natOList.toList()
+        }
+        binding.cbA11I.setOnCheckedChangeListener(nOWatcher)
+        binding.cbA11K.setOnCheckedChangeListener(nOWatcher)
+        binding.cbA11L.setOnCheckedChangeListener(nOWatcher)
+        binding.cbA11M.setOnCheckedChangeListener(nOWatcher)
+        binding.cbA11N.setOnCheckedChangeListener(nOWatcher)
+        binding.cbA11O.setOnCheckedChangeListener(nOWatcher)
+        binding.cbA11P.setOnCheckedChangeListener(nOWatcher)
+        binding.cbA11Q.setOnCheckedChangeListener(nOWatcher)
+
+        val natFList = mutableListOf<String>()
+        val nFWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val f = bv.text.toString().substringAfter(". ")
+            if (isChecked) natFList.add(f) else natFList.remove(f)
+            constitutionData.naturalFreedoms = natFList.toList()
+        }
+        binding.cbA21A.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21B.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21C.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21D.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21E.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21F.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21G.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21H.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21I.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21J.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21K.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21L.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21M.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21N.setOnCheckedChangeListener(nFWatcher)
+        binding.cbA21O.setOnCheckedChangeListener(nFWatcher)
+
+        // DUTIES
+        binding.rgIncludeDuties.setOnCheckedChangeListener { _, checkedId ->
+            constitutionData.includeDuties = (checkedId == R.id.rbDutiesYes)
+            binding.containerDuties.visibility = if (constitutionData.includeDuties) View.VISIBLE else View.GONE
+            binding.tvChapter2Title.text = if (constitutionData.includeDuties) "CHAPTER TWO: FUNDAMENTAL RIGHTS AND DUTIES" else "CHAPTER TWO: FUNDAMENTAL RIGHTS"
+        }
         val dutiesList = mutableListOf<String>()
-        binding.checkboxDutyAbide.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) dutiesList.add("Abide by constitution") else dutiesList.remove("Abide by constitution")
+        val dWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val d = bv.text.toString().substringAfter(". ")
+            if (isChecked) dutiesList.add(d) else dutiesList.remove(d)
             constitutionData.fundamentalDuties = dutiesList.toList()
         }
-        binding.checkboxDutyDefend.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) dutiesList.add("Defend country") else dutiesList.remove("Defend country")
-            constitutionData.fundamentalDuties = dutiesList.toList()
-        }
-        binding.checkboxDutyTaxes.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) dutiesList.add("Pay taxes") else dutiesList.remove("Pay taxes")
-            constitutionData.fundamentalDuties = dutiesList.toList()
-        }
-        binding.checkboxDutyHarmony.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) dutiesList.add("Promote harmony") else dutiesList.remove("Promote harmony")
-            constitutionData.fundamentalDuties = dutiesList.toList()
-        }
-        binding.checkboxDutyEnvironment.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) dutiesList.add("Protect environment") else dutiesList.remove("Protect environment")
-            constitutionData.fundamentalDuties = dutiesList.toList()
-        }
+        binding.cbDutyA.setOnCheckedChangeListener(dWatcher)
+        binding.cbDutyB.setOnCheckedChangeListener(dWatcher)
+        binding.cbDutyC.setOnCheckedChangeListener(dWatcher)
+        binding.cbDutyD.setOnCheckedChangeListener(dWatcher)
+        binding.cbDutyE.setOnCheckedChangeListener(dWatcher)
+        binding.cbDutyG.setOnCheckedChangeListener(dWatcher)
     }
 
     private fun setupChapter3() {
-        binding.radioGroupFlagDetermination.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.flagDetermination = when (checkedId) {
-                R.id.radioFlagInConstitution -> "Described in constitution"
-                R.id.radioFlagByLaw -> "Determined by law"
-                R.id.radioFlagTraditional -> "Traditional flag"
-                else -> ""
-            }
+        binding.rgFlag.setOnCheckedChangeListener { _, checkedId ->
+            constitutionData.flagDetermination = if (checkedId == R.id.rbFlagA) "Described in constitution" else "Determined by law"
+            binding.tilFlag.visibility = if (checkedId == R.id.rbFlagA) View.VISIBLE else View.GONE
         }
-
-        binding.radioGroupCapitalDetermination.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.capitalDetermination = when (checkedId) {
-                R.id.radioCapitalInConstitution -> "Designated in constitution"
-                R.id.radioCapitalByLaw -> "Determined by law"
-                else -> ""
-            }
-            binding.capitalNameInput.visibility = if (checkedId == R.id.radioCapitalInConstitution) View.VISIBLE else View.GONE
-        }
-
-        binding.editCapitalName.addTextChangedListener(object : TextWatcher {
+        binding.editFlag.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { constitutionData.flagDescription = s.toString() }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        binding.rgEmblem.setOnCheckedChangeListener { _, checkedId ->
+            constitutionData.emblemDetermination = if (checkedId == R.id.rbEmblemA) "Described in constitution" else "Determined by law"
+            binding.tilEmblem.visibility = if (checkedId == R.id.rbEmblemA) View.VISIBLE else View.GONE
+        }
+        binding.editEmblem.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { constitutionData.emblemDescription = s.toString() }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        binding.rgCapital.setOnCheckedChangeListener { _, checkedId ->
+            constitutionData.capitalDetermination = if (checkedId == R.id.rbCapA) "Designated by name in constitution" else "Determined by law"
+            binding.tilCap.visibility = if (checkedId == R.id.rbCapA) View.VISIBLE else View.GONE
+        }
+        binding.editCap.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) { constitutionData.capitalName = s.toString() }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
     }
 
     private fun setupChapter4() {
-        val principlesList = mutableListOf<String>()
-        binding.checkboxWealthDistribution.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) principlesList.add("Equitable wealth distribution") else principlesList.remove("Equitable wealth distribution")
-            constitutionData.directivePrinciples = principlesList.toList()
+        val dpList = mutableListOf<String>()
+        val dpWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val p = bv.text.toString().substringAfter(". ")
+            if (isChecked) dpList.add(p) else dpList.remove(p)
+            constitutionData.directivePrinciples = dpList.toList()
         }
-        binding.checkboxFreeEducation.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) principlesList.add("Free education") else principlesList.remove("Free education")
-            constitutionData.directivePrinciples = principlesList.toList()
-        }
-        binding.checkboxLivingWage.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) principlesList.add("Living wage") else principlesList.remove("Living wage")
-            constitutionData.directivePrinciples = principlesList.toList()
-        }
-        binding.checkboxInternationalPeace.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) principlesList.add("International peace") else principlesList.remove("International peace")
-            constitutionData.directivePrinciples = principlesList.toList()
-        }
-        binding.checkboxEnvironment.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) principlesList.add("Protect environment") else principlesList.remove("Protect environment")
-            constitutionData.directivePrinciples = principlesList.toList()
-        }
-        binding.checkboxCottageIndustries.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) principlesList.add("Cottage industries") else principlesList.remove("Cottage industries")
-            constitutionData.directivePrinciples = principlesList.toList()
-        }
-        binding.checkboxSeparateJudiciary.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) principlesList.add("Separate judiciary") else principlesList.remove("Separate judiciary")
-            constitutionData.directivePrinciples = principlesList.toList()
+        binding.cbD41A.setOnCheckedChangeListener(dpWatcher)
+        binding.cbD41B.setOnCheckedChangeListener(dpWatcher)
+        binding.cbD41C.setOnCheckedChangeListener(dpWatcher)
+        binding.cbD41D.setOnCheckedChangeListener(dpWatcher)
+        binding.cbD41E.setOnCheckedChangeListener(dpWatcher)
+        binding.cbD41F.setOnCheckedChangeListener(dpWatcher)
+        binding.cbD41G.setOnCheckedChangeListener(dpWatcher)
+
+        val customDList = mutableListOf<String>()
+        binding.btnAddD.setOnClickListener {
+            val et = EditText(this)
+            AlertDialog.Builder(this).setTitle("Add Principle").setView(et).setPositiveButton("Add") { _, _ ->
+                val p = et.text.toString()
+                if (p.isNotBlank()) {
+                    customDList.add(p)
+                    constitutionData.customDirectivePrinciples = customDList.toList()
+                    val tv = TextView(this)
+                    tv.text = "• $p"
+                    binding.containerCustomD.addView(tv)
+                }
+            }.setNegativeButton("Cancel", null).show()
         }
     }
 
     private fun setupChapter5() {
-        binding.radioGroupLegislatureStructure.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.legislatureStructure = when (checkedId) {
-                R.id.radioUnicameral -> "Unicameral"
-                R.id.radioBicameral -> "Bicameral"
+        binding.rgLegStructure.setOnCheckedChangeListener { _, id ->
+            constitutionData.legislatureStructure = when (id) {
+                R.id.rbLegUni -> "Unicameral"
+                R.id.rbLegBi -> "Bicameral"
+                R.id.rbLegTri -> "Tricameral"
+                else -> ""
+            }
+            binding.containerUpper.visibility = if (id != R.id.rbLegUni) View.VISIBLE else View.GONE
+            binding.tvTriDesc.visibility = if (id == R.id.rbLegTri) View.VISIBLE else View.GONE
+        }
+        binding.rgLegElect.setOnCheckedChangeListener { _, id ->
+            constitutionData.lowerHouseElection = when (id) {
+                R.id.rbElectA -> "First-past-the-post"
+                R.id.rbElectB -> "Proportional representation"
+                R.id.rbElectC -> "Mixed-member proportional"
                 else -> ""
             }
         }
-        binding.radioGroupElectionSystem.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.electionSystem = when (checkedId) {
-                R.id.radioFPTP -> "First-past-the-post"
-                R.id.radioProportional -> "Proportional representation"
-                R.id.radioMixed -> "Mixed-member proportional"
-                else -> ""
-            }
+        val lpList = mutableListOf<String>()
+        val lpWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val p = bv.text.toString().substringAfter(". ")
+            if (isChecked) lpList.add(p) else lpList.remove(p)
+            constitutionData.legislaturePowers = lpList.toList()
         }
+        binding.cbPowA.setOnCheckedChangeListener(lpWatcher)
+        binding.cbPowB.setOnCheckedChangeListener(lpWatcher)
+        binding.cbPowC.setOnCheckedChangeListener(lpWatcher)
+        binding.cbPowD.setOnCheckedChangeListener(lpWatcher)
+        binding.cbPowE.setOnCheckedChangeListener(lpWatcher)
 
-        val legislativePowersList = mutableListOf<String>()
-        binding.checkboxPowerDeclareWar.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) legislativePowersList.add("Declare war") else legislativePowersList.remove("Declare war")
-            constitutionData.legislativePowers = legislativePowersList.toList()
+        binding.rgUpperElect.setOnCheckedChangeListener { _, id ->
+            constitutionData.upperHouseElection = when (id) {
+                R.id.rbUpperA -> "Indirect election by lower house"
+                R.id.rbUpperB -> "Appointment by state assemblies"
+                R.id.rbUpperC -> "Mixed-member proportional"
+                else -> ""
+            }
         }
-        binding.checkboxPowerRatifyTreaties.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) legislativePowersList.add("Ratify treaties") else legislativePowersList.remove("Ratify treaties")
-            constitutionData.legislativePowers = legislativePowersList.toList()
+        val upList = mutableListOf<String>()
+        val upWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val p = bv.text.toString().substringAfter(". ")
+            if (isChecked) upList.add(p) else upList.remove(p)
+            constitutionData.upperHousePowers = upList.toList()
         }
-        binding.checkboxPowerBudget.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) legislativePowersList.add("Approve budget") else legislativePowersList.remove("Approve budget")
-            constitutionData.legislativePowers = legislativePowersList.toList()
-        }
-        binding.checkboxPowerConfirmAppointments.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) legislativePowersList.add("Confirm appointments") else legislativePowersList.remove("Confirm appointments")
-            constitutionData.legislativePowers = legislativePowersList.toList()
-        }
-        binding.checkboxPowerImpeach.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) legislativePowersList.add("Impeach President") else legislativePowersList.remove("Impeach President")
-            constitutionData.legislativePowers = legislativePowersList.toList()
-        }
+        binding.cbUPowA.setOnCheckedChangeListener(upWatcher)
+        binding.cbUPowB.setOnCheckedChangeListener(upWatcher)
+        binding.cbUPowC.setOnCheckedChangeListener(upWatcher)
+        binding.cbUPowD.setOnCheckedChangeListener(upWatcher)
 
-        binding.radioGroupPresidentSelection.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.presidentSelection = when (checkedId) {
-                R.id.radioDirectElection -> "Direct popular vote"
-                R.id.radioElectoralCollege -> "Electoral college"
-                R.id.radioLegislativeElection -> "Elected by legislature"
-                R.id.radioHereditary -> "Hereditary succession"
+        binding.rgPresSelect.setOnCheckedChangeListener { _, id ->
+            constitutionData.presidentSelection = when (id) {
+                R.id.rbPresA -> "Direct election by popular vote"
+                R.id.rbPresB -> "Election by an electoral college"
+                R.id.rbPresC -> "Election by the legislature"
                 else -> ""
             }
         }
-        binding.radioGroupPresidentTerms.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.presidentTerms = when (checkedId) {
-                R.id.radioOneTerm -> "One term only"
-                R.id.radioTwoTerms -> "Two terms"
-                R.id.radioUnlimitedTerms -> "Unlimited terms"
-                R.id.radioNoTermLimit -> "No term limit specified"
+        binding.rgPresTerms.setOnCheckedChangeListener { _, id ->
+            constitutionData.presidentMaxTerms = when (id) {
+                R.id.rbTermA -> "One term only"
+                R.id.rbTermB -> "Two terms"
+                R.id.rbTermC -> "Unlimited terms"
+                R.id.rbTermD -> "No term limit specified"
                 else -> ""
             }
         }
-        binding.radioGroupPrimeMinisterAppointment.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.primeMinisterAppointment = when (checkedId) {
-                R.id.radioPMDirectElection -> "Direct election"
-                R.id.radioPMAppointedByPresident -> "Appointed by President"
-                R.id.radioPMAppointedWithoutConfirm -> "Appointed by President"
-                R.id.radioPMElectedByLegislature -> "Elected by legislature"
+        binding.rgPmAppt.setOnCheckedChangeListener { _, id ->
+            constitutionData.pmAppointment = when (id) {
+                R.id.rbPmA -> "Direct election by the people"
+                R.id.rbPmB -> "Appointed by the President"
+                R.id.rbPmD -> "Elected directly by the legislature"
                 else -> ""
             }
         }
-        binding.radioGroupJudgeAppointment.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.judgeAppointment = when (checkedId) {
-                R.id.radioJudgePresidentAlone -> "President alone"
-                R.id.radioJudgePresidentWithConsent -> "President with consent"
-                R.id.radioJudgeCommission -> "Independent Commission"
-                R.id.radioJudgeLegislativeElection -> "Elected by legislature"
+        binding.rgDur.setOnCheckedChangeListener { _, id ->
+            constitutionData.termDuration = when (id) {
+                R.id.rbDurA -> "4 years"
+                R.id.rbDurB -> "3 years"
+                R.id.rbDurC -> "5 years"
                 else -> ""
             }
         }
-
-        val judicialProtectionsList = mutableListOf<String>()
-        binding.checkboxJudicialTenure.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) judicialProtectionsList.add("Life tenure") else judicialProtectionsList.remove("Life tenure")
-            constitutionData.judicialProtections = judicialProtectionsList.toList()
-        }
-        binding.checkboxJudicialSalary.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) judicialProtectionsList.add("Salary protection") else judicialProtectionsList.remove("Salary protection")
-            constitutionData.judicialProtections = judicialProtectionsList.toList()
-        }
-        binding.checkboxJudicialRemoval.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) judicialProtectionsList.add("Removal process") else judicialProtectionsList.remove("Removal process")
-            constitutionData.judicialProtections = judicialProtectionsList.toList()
-        }
-        binding.checkboxJudicialAutonomy.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) judicialProtectionsList.add("Administrative autonomy") else judicialProtectionsList.remove("Administrative autonomy")
-            constitutionData.judicialProtections = judicialProtectionsList.toList()
-        }
-
-        binding.radioGroupJudicialReview.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.judicialReviewScope = when (checkedId) {
-                R.id.radioReviewFull -> "Full review"
-                R.id.radioReviewLimited -> "Limited review"
-                R.id.radioReviewNotGranted -> "Not granted"
+        binding.rgJudAppt.setOnCheckedChangeListener { _, id ->
+            constitutionData.judgeAppointment = when (id) {
+                R.id.rbJudA -> "Appointed by President alone"
+                R.id.rbJudB -> "Appointed by President with legislature"
+                R.id.rbJudC -> "Independent Commission"
+                R.id.rbJudD -> "Elected by legislature"
                 else -> ""
             }
         }
+        val jpList = mutableListOf<String>()
+        val jpWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val p = bv.text.toString().substringAfter(". ")
+            if (isChecked) jpList.add(p) else jpList.remove(p)
+            constitutionData.judicialProtections = jpList.toList()
+        }
+        binding.cbJProtA.setOnCheckedChangeListener(jpWatcher)
+        binding.cbJProtB.setOnCheckedChangeListener(jpWatcher)
+        binding.cbJProtC.setOnCheckedChangeListener(jpWatcher)
+        binding.cbJProtD.setOnCheckedChangeListener(jpWatcher)
     }
 
     private fun setupChapter6() {
-        binding.radioGroupSupremeCommander.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.supremeCommander = when (checkedId) {
-                R.id.radioCommanderPresident -> "President"
-                R.id.radioCommanderPrimeMinister -> "Prime Minister"
-                R.id.radioCommanderMinister -> "Minister of Defense"
-                R.id.radioCommanderMilitary -> "Military officer"
+        binding.rgMilComm.setOnCheckedChangeListener { _, id ->
+            constitutionData.supremeCommander = when (id) {
+                R.id.rbMCommA -> "The President"
+                R.id.rbMCommB -> "The Prime Minister"
+                R.id.rbMCommC -> "The Minister of Defense"
+                R.id.rbMCommD -> "A senior military officer"
                 else -> ""
             }
         }
-        val militaryRestrictionsList = mutableListOf<String>()
-        binding.checkboxMilitaryNoCivilOffice.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) militaryRestrictionsList.add("No civil office") else militaryRestrictionsList.remove("No civil office")
-            constitutionData.militaryRestrictions = militaryRestrictionsList.toList()
+        val mrList = mutableListOf<String>()
+        val mrWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val r = bv.text.toString().substringAfter(". ")
+            if (isChecked) mrList.add(r) else mrList.remove(r)
+            constitutionData.militaryRestrictions = mrList.toList()
         }
-        binding.checkboxMilitaryApolitical.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) militaryRestrictionsList.add("Apolitical") else militaryRestrictionsList.remove("Apolitical")
-            constitutionData.militaryRestrictions = militaryRestrictionsList.toList()
-        }
-        binding.checkboxMilitaryWarPower.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) militaryRestrictionsList.add("War power with legislature") else militaryRestrictionsList.remove("War power with legislature")
-            constitutionData.militaryRestrictions = militaryRestrictionsList.toList()
-        }
-        binding.checkboxMilitaryNoPoliticalUse.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) militaryRestrictionsList.add("No political use") else militaryRestrictionsList.remove("No political use")
-            constitutionData.militaryRestrictions = militaryRestrictionsList.toList()
-        }
+        binding.cbMRestA.setOnCheckedChangeListener(mrWatcher)
+        binding.cbMRestB.setOnCheckedChangeListener(mrWatcher)
+        binding.cbMRestC.setOnCheckedChangeListener(mrWatcher)
     }
 
     private fun setupChapter7() {
-        binding.radioGroupEconomicPrinciple.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.economicPrinciple = when (checkedId) {
-                R.id.radioFreeMarket -> "Free-market"
-                R.id.radioMixedEconomy -> "Mixed economy"
-                R.id.radioStateControlled -> "State-controlled"
-                R.id.radioCooperative -> "Cooperative-based"
+        binding.rgEco.setOnCheckedChangeListener { _, id ->
+            constitutionData.economicPrinciple = when (id) {
+                R.id.rbEcoA -> "Free-market capitalism"
+                R.id.rbEcoB -> "Mixed economy"
+                R.id.rbEcoC -> "State-controlled economy"
+                R.id.rbEcoD -> "Cooperative-based economy"
                 else -> ""
             }
         }
-        val economicPoliciesList = mutableListOf<String>()
-        binding.checkboxFreeMovement.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) economicPoliciesList.add("Free movement") else economicPoliciesList.remove("Free movement")
-            constitutionData.economicPolicies = economicPoliciesList.toList()
+        val epList = mutableListOf<String>()
+        val epWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val p = bv.text.toString().substringAfter(". ")
+            if (isChecked) epList.add(p) else epList.remove(p)
+            constitutionData.economicPolicies = epList.toList()
         }
-        binding.checkboxStateOwnership.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) economicPoliciesList.add("State ownership") else economicPoliciesList.remove("State ownership")
-            constitutionData.economicPolicies = economicPoliciesList.toList()
-        }
-        binding.checkboxRegulateMonopolies.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) economicPoliciesList.add("Regulate monopolies") else economicPoliciesList.remove("Regulate monopolies")
-            constitutionData.economicPolicies = economicPoliciesList.toList()
-        }
-        binding.checkboxSupportCooperatives.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) economicPoliciesList.add("Support cooperatives") else economicPoliciesList.remove("Support cooperatives")
-            constitutionData.economicPolicies = economicPoliciesList.toList()
-        }
+        binding.cbEcoPolA.setOnCheckedChangeListener(epWatcher)
+        binding.cbEcoPolB.setOnCheckedChangeListener(epWatcher)
+        binding.cbEcoPolC.setOnCheckedChangeListener(epWatcher)
+        binding.cbEcoPolD.setOnCheckedChangeListener(epWatcher)
     }
 
     private fun setupChapter8() {
-        val educationalProvisionsList = mutableListOf<String>()
-        binding.checkboxFreePrimaryEducation.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) educationalProvisionsList.add("Free primary education") else educationalProvisionsList.remove("Free primary education")
-            constitutionData.educationalProvisions = educationalProvisionsList.toList()
+        val epList = mutableListOf<String>()
+        val epWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val p = bv.text.toString().substringAfter(". ")
+            if (isChecked) epList.add(p) else epList.remove(p)
+            constitutionData.educationalProvisions = epList.toList()
         }
-        binding.checkboxScholarships.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) educationalProvisionsList.add("Scholarships") else educationalProvisionsList.remove("Scholarships")
-            constitutionData.educationalProvisions = educationalProvisionsList.toList()
-        }
-        binding.checkboxNoPoliticalInterference.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) educationalProvisionsList.add("No interference") else educationalProvisionsList.remove("No interference")
-            constitutionData.educationalProvisions = educationalProvisionsList.toList()
-        }
-        binding.checkboxPrivateEducation.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) educationalProvisionsList.add("Private education") else educationalProvisionsList.remove("Private education")
-            constitutionData.educationalProvisions = educationalProvisionsList.toList()
-        }
-        binding.radioGroupEducationBudget.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.educationBudget = when (checkedId) {
-                R.id.radioBudgetNone -> "None"
-                R.id.radioBudget5 -> "5%"
-                R.id.radioBudget10 -> "10%"
-                R.id.radioBudget15 -> "15%"
+        binding.cbEduA.setOnCheckedChangeListener(epWatcher)
+        binding.cbEduC.setOnCheckedChangeListener(epWatcher)
+        binding.cbEduD.setOnCheckedChangeListener(epWatcher)
+
+        binding.rgEduBud.setOnCheckedChangeListener { _, id ->
+            constitutionData.educationBudgetMin = when (id) {
+                R.id.rbEBudA -> "No minimum"
+                R.id.rbEBudB -> "2%"
+                R.id.rbEBudC -> "5%"
+                R.id.rbEBudD -> "8%"
                 else -> ""
             }
         }
     }
 
     private fun setupChapter9() {
-        val minorityProtectionsList = mutableListOf<String>()
-        binding.checkboxMinorityCulture.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) minorityProtectionsList.add("Culture protection") else minorityProtectionsList.remove("Culture protection")
-            constitutionData.minorityProtections = minorityProtectionsList.toList()
+        val mpList = mutableListOf<String>()
+        val mpWatcher = CompoundButton.OnCheckedChangeListener { bv, isChecked ->
+            val p = bv.text.toString().substringAfter(". ")
+            if (isChecked) mpList.add(p) else mpList.remove(p)
+            constitutionData.minorityProtections = mpList.toList()
         }
-        binding.checkboxMinorityNonDiscrimination.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) minorityProtectionsList.add("Non-discrimination") else minorityProtectionsList.remove("Non-discrimination")
-            constitutionData.minorityProtections = minorityProtectionsList.toList()
-        }
-        binding.checkboxMinorityRepresentation.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) minorityProtectionsList.add("Representation") else minorityProtectionsList.remove("Representation")
-            constitutionData.minorityProtections = minorityProtectionsList.toList()
-        }
-        binding.checkboxMinorityAutonomy.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) minorityProtectionsList.add("Autonomy") else minorityProtectionsList.remove("Autonomy")
-            constitutionData.minorityProtections = minorityProtectionsList.toList()
-        }
+        binding.cbMinA.setOnCheckedChangeListener(mpWatcher)
+        binding.cbMinB.setOnCheckedChangeListener(mpWatcher)
+        binding.cbMinC.setOnCheckedChangeListener(mpWatcher)
+        binding.cbMinD.setOnCheckedChangeListener(mpWatcher)
     }
 
     private fun setupChapter10() {
-        binding.radioGroupAmendmentProcedure.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.amendmentProcedure = when (checkedId) {
-                R.id.radioAmendmentSimple -> "Simple majority"
-                R.id.radioAmendmentSupermajority -> "Supermajority"
-                R.id.radioAmendmentSupermajorityReferendum -> "Referendum"
-                R.id.radioAmendmentSupermajorityStates -> "State ratification"
+        binding.rgAmend.setOnCheckedChangeListener { _, id ->
+            constitutionData.amendmentProcedure = when (id) {
+                R.id.rbAmendA -> "To amend the constitution simple mejority in parliment with president approval is needed"
+                R.id.rbAmendB -> "To amend the constitution supreme mejority in parliment is needed"
+                R.id.rbAmendC -> "To amend the constitution supreme mejority in parliment with a national referandum to be conduct to get the approval of the people"
+                R.id.rbAmendD -> "To amend the constitution supreme mejority in parliment with a state simple majority of states accepting the amendment"
                 else -> ""
             }
         }
-        binding.radioGroupInterpretationAuthority.setOnCheckedChangeListener { _, checkedId ->
-            constitutionData.interpretationAuthority = when (checkedId) {
-                R.id.radioInterpretLegislature -> "Legislature"
-                R.id.radioInterpretExecutive -> "Executive"
-                R.id.radioInterpretCourt -> "Court"
-                R.id.radioInterpretCouncil -> "Council"
+        binding.rgInterp.setOnCheckedChangeListener { _, id ->
+            constitutionData.interpretationAuthority = when (id) {
+                R.id.rbInterpA -> "Legislature"
+                R.id.rbInterpB -> "Executive"
+                R.id.rbInterpC -> "Highest Court"
+                R.id.rbInterpD -> "Constitutional Council"
                 else -> ""
             }
+        }
+    }
+
+    private fun setViewGroupEnabled(vg: ViewGroup, enabled: Boolean) {
+        vg.isEnabled = enabled
+        for (i in 0 until vg.childCount) {
+            val child = vg.getChildAt(i)
+            if (child is ViewGroup) setViewGroupEnabled(child, enabled) else child.isEnabled = enabled
         }
     }
 
@@ -470,43 +571,27 @@ class ConstitutionFormActivity : AppCompatActivity() {
         binding.buttonSubmit.setOnClickListener {
             val errors = validateSelections()
             if (errors.isNotEmpty()) {
-                AlertDialog.Builder(this)
-                    .setTitle("Incomplete")
-                    .setMessage(errors.joinToString("\n"))
-                    .setPositiveButton("OK", null).show()
+                AlertDialog.Builder(this).setTitle("Incomplete").setMessage(errors.joinToString("\n")).setPositiveButton("OK", null).show()
                 return@setOnClickListener
             }
-
-            val finalDocumentName = if (registerNumber.isNotEmpty()) registerNumber else "Constitution_${System.currentTimeMillis()}"
-
             lifecycleScope.launch {
-                val jsonDataString = gson.toJson(constitutionData)
-                val entity = ConstitutionEntity(
-                    name = finalDocumentName,
-                    jsonData = jsonDataString,
-                    dateCreated = System.currentTimeMillis()
-                )
+                val entity = ConstitutionEntity(name = constitutionData.countryName, jsonData = gson.toJson(constitutionData), dateCreated = System.currentTimeMillis())
                 database.constitutionDao().insert(entity)
-                Toast.makeText(this@ConstitutionFormActivity, "Saved as $finalDocumentName", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ConstitutionFormActivity, "Constitution for ${constitutionData.countryName} saved!", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
     }
 
     private fun validateSelections(): List<String> {
-        val errors = mutableListOf<String>()
-        if (constitutionData.countryName.isBlank()) errors.add("Country Name")
-        if (constitutionData.formOfGovernment.isEmpty()) errors.add("Form of Government")
-        if (constitutionData.sourceOfAuthority.isEmpty()) errors.add("Source of Authority")
-        if (constitutionData.nonNullableRights.size < 2) errors.add("2 Non-Nullable Rights")
-        if (constitutionData.suspendableFreedoms.isEmpty()) errors.add("1 Suspendable Freedom")
-        if (constitutionData.suspensionAuthority.isEmpty()) errors.add("Suspension Authority")
-        if (constitutionData.directivePrinciples.size < 3) errors.add("3 Directive Principles")
-        if (constitutionData.legislatureStructure.isEmpty()) errors.add("Legislature Structure")
-        if (constitutionData.presidentSelection.isEmpty()) errors.add("President Selection")
-        if (constitutionData.judgeAppointment.isEmpty()) errors.add("Judge Appointment")
-        if (constitutionData.amendmentProcedure.isEmpty()) errors.add("Amendment Procedure")
-        if (constitutionData.interpretationAuthority.isEmpty()) errors.add("Interpretation Authority")
-        return errors
+        val err = mutableListOf<String>()
+        if (constitutionData.countryName.isBlank()) err.add("• Country Name")
+        if (constitutionData.formOfGovernment.isEmpty()) err.add("• Form of Government")
+        if (constitutionData.sourceOfAuthority.isEmpty()) err.add("• Source of Authority")
+        if (constitutionData.rightsSource.isEmpty()) err.add("• Rights Source")
+        if (constitutionData.rightsSource == "Natural" && constitutionData.naturalRightsNonNullable.size < 6) err.add("• At least 6 natural non-nullable rights")
+        if (constitutionData.directivePrinciples.size + constitutionData.customDirectivePrinciples.size < 3) err.add("• At least 3 directive principles")
+        if (constitutionData.legislatureStructure.isEmpty()) err.add("• Legislature Structure")
+        return err
     }
 }

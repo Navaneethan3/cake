@@ -152,7 +152,7 @@ class PreviewActivity : AppCompatActivity() {
     
     <div class="footer">
         Adopted on this day, ${java.text.SimpleDateFormat("MMMM dd, yyyy", java.util.Locale.getDefault()).format(java.util.Date())}<br>
-        ${constitutionName}
+        $constitutionName
     </div>
 </body>
 </html>
@@ -162,9 +162,9 @@ class PreviewActivity : AppCompatActivity() {
     private fun generateChapter1(): String {
         val countryName = constitutionData.countryName.ifEmpty { "[Country Name]" }
         val principles = mutableListOf<String>()
-        if (constitutionData.secular) principles.add("secular")
+        if (constitutionData.isSecular) principles.add("secular")
         if (constitutionData.officialReligion) principles.add("with an official religion")
-        if (constitutionData.social) principles.add("social")
+        if (constitutionData.isSocial) principles.add("social")
         if (constitutionData.constitutionSupreme) principles.add("with the Constitution as the supreme law")
 
         val principlesText = if (principles.isNotEmpty()) principles.joinToString(", ") else ""
@@ -188,16 +188,26 @@ class PreviewActivity : AppCompatActivity() {
     }
 
     private fun generateChapter2(): String {
-        val nonNullableText = constitutionData.nonNullableRights.joinToString(";\n") {
+        val nonNullableRights = if (constitutionData.rightsSource == "Natural") 
+            constitutionData.naturalRightsNonNullable 
+        else 
+            constitutionData.constNonNullableRights
+            
+        val suspendableFreedoms = if (constitutionData.rightsSource == "Natural")
+            constitutionData.naturalFreedoms
+        else
+            constitutionData.constSuspendableFreedoms
+
+        val nonNullableText = nonNullableRights.joinToString(";\n") {
             "    $it"
         }
 
-        val freedomsText = constitutionData.suspendableFreedoms.joinToString(";\n") {
+        val freedomsText = suspendableFreedoms.joinToString(";\n") {
             "    $it"
         }
 
         val suspensionText = when {
-            constitutionData.suspensionAuthority.contains("No suspension") ->
+            constitutionData.suspensionAuthority.contains("not permitted") ->
                 "These freedoms are inviolable and shall not be suspended under any circumstances."
             else -> """
                 These freedoms may be restricted only by law, and only to the extent necessary for public order, national security, or public health.
@@ -206,7 +216,7 @@ class PreviewActivity : AppCompatActivity() {
         }
 
         var dutiesText = ""
-        if (constitutionData.includeFundamentalDuties && constitutionData.fundamentalDuties.isNotEmpty()) {
+        if (constitutionData.includeDuties && constitutionData.fundamentalDuties.isNotEmpty()) {
             val duties = constitutionData.fundamentalDuties.joinToString(";\n") { "    $it" }
             dutiesText = """
                 <div class="article">
@@ -246,17 +256,25 @@ class PreviewActivity : AppCompatActivity() {
     }
 
     private fun generateChapter3(): String {
+        val countryName = constitutionData.countryName.ifEmpty { "[Country Name]" }
         val flagText = when {
             constitutionData.flagDetermination.contains("Described") ->
-                "The National Flag shall be described in detail within this Constitution."
+                "The national flag of the $countryName shall be ${constitutionData.flagDescription}."
             constitutionData.flagDetermination.contains("law") ->
-                "The National Flag shall be as determined by law."
-            else -> "The National Flag shall be the traditional flag associated with the nation's founding."
+                "The national flag of the $countryName shall be as designated by law passed by legislature."
+            else -> "The national flag of the $countryName shall be the traditional flag associated with the nation's founding."
+        }
+
+        val emblemText = if (constitutionData.emblemDetermination.contains("Described")) {
+            val description = constitutionData.emblemDescription.ifEmpty { "[Emblem description]" }
+            "The national emblem of the $countryName shall be $description."
+        } else {
+            "The national emblem of the $countryName shall be as designated by law."
         }
 
         val capitalText = if (constitutionData.capitalDetermination.contains("Designated")) {
             val name = constitutionData.capitalName
-            val displayCity = if (name.isEmpty()) "[Capital City]" else name
+            val displayCity = name.ifEmpty { "[Capital City]" }
             "The capital of the Republic shall be $displayCity."
         } else {
             "The capital of the Republic shall be as designated by law."
@@ -265,15 +283,17 @@ class PreviewActivity : AppCompatActivity() {
         return """
             <h2>CHAPTER THREE: NATIONAL SYMBOLS</h2>
             <div class="article">
-                <div class="article-title">Article 6: National Flag and Capital</div>
+                <div class="article-title">Article 6: National Flag, Emblem and Capital</div>
                 <div class="clause">$flagText</div>
+                <div class="clause">$emblemText</div>
                 <div class="clause">$capitalText</div>
             </div>
         """.trimIndent()
     }
 
     private fun generateChapter4(): String {
-        val principles = constitutionData.directivePrinciples.joinToString(";\n") { "    $it" }
+        val allPrinciples = constitutionData.directivePrinciples + constitutionData.customDirectivePrinciples
+        val principles = allPrinciples.joinToString(";\n") { "    $it" }
 
         return """
             <h2>CHAPTER FOUR: DIRECTIVE PRINCIPLES</h2>
@@ -291,58 +311,53 @@ class PreviewActivity : AppCompatActivity() {
         val legislativeStructure = when (constitutionData.legislatureStructure) {
             "Unicameral" -> "a unicameral National Assembly"
             "Bicameral" -> "a bicameral National Assembly consisting of a lower house and an upper house"
+            "Tricameral" -> "a tricameral National Assembly consisting of a lower house, an upper house, and a Constitutional House"
             else -> "a National Assembly"
         }
 
-        val electionText = when (constitutionData.electionSystem) {
+        val electionText = when (constitutionData.lowerHouseElection) {
             "First-past-the-post" -> "elected by first-past-the-post from single-member districts"
             "Proportional representation" -> "elected by proportional representation based on party lists"
             "Mixed-member proportional" -> "elected by a mixed-member proportional system"
             else -> "elected in accordance with law"
         }
 
-        val powers = if (constitutionData.legislativePowers.isNotEmpty()) {
-            constitutionData.legislativePowers.joinToString(", ")
+        val powers = if (constitutionData.legislaturePowers.isNotEmpty()) {
+            constitutionData.legislaturePowers.joinToString(", ")
         } else "to make laws"
 
         val presidentText = when (constitutionData.presidentSelection) {
-            "Direct popular vote" -> "elected by direct popular vote"
-            "Electoral college" -> "elected by an electoral college"
-            "Elected by legislature" -> "elected by the National Assembly"
-            "Hereditary succession" -> "succeeding by hereditary right"
+            "Direct election by popular vote" -> "elected by direct popular vote"
+            "Election by an electoral college" -> "elected by an electoral college"
+            "Election by the legislature" -> "elected by the National Assembly"
             else -> "selected in accordance with law"
         }
 
-        val termsText = when (constitutionData.presidentTerms) {
+        val termsText = when (constitutionData.presidentMaxTerms) {
             "One term only" -> "for a single term"
-            "Two terms" -> "for a term of five years, renewable once"
-            "Unlimited terms" -> "for a term of five years, with no limit on re-election"
+            "Two terms" -> "for a term of ${constitutionData.termDuration}, renewable once"
+            "Unlimited terms" -> "for a term of ${constitutionData.termDuration}, with no limit on re-election"
             else -> "for a term determined by law"
         }
 
-        val pmText = when (constitutionData.primeMinisterAppointment) {
-            "Direct election by people" -> "directly elected by the people"
-            "Appointed by President, needs confidence" -> "appointed by the President and must command the confidence of the National Assembly"
-            "Appointed by President without confirmation" -> "appointed by the President"
-            "Elected by legislature" -> "elected by the National Assembly"
+        val pmText = when (constitutionData.pmAppointment) {
+            "Direct election by the people" -> "directly elected by the people"
+            "Appointed by the President" -> "appointed by the President and must command the confidence of the National Assembly"
+            "Elected directly by the legislature" -> "elected by the National Assembly"
             else -> "appointed in accordance with law"
         }
 
         val judgeText = when (constitutionData.judgeAppointment) {
-            "President alone" -> "appointed by the President"
-            "President with legislative consent" -> "appointed by the President with the consent of the National Assembly"
-            "Independent Judicial Commission" -> "appointed by an independent Judicial Appointments Commission"
+            "Appointed by President alone" -> "appointed by the President"
+            "Appointed by President with legislature" -> "appointed by the President with the consent of the National Assembly"
+            "Independent Commission" -> "appointed by an independent Judicial Appointments Commission"
             "Elected by legislature" -> "elected by the National Assembly"
             else -> "appointed in accordance with law"
         }
 
         val protections = constitutionData.judicialProtections.joinToString(";\n") { "    $it" }
 
-        val reviewText = when (constitutionData.judicialReviewScope) {
-            "Full judicial review" -> "The Supreme Court shall have the power of judicial review over all laws, executive actions, and administrative decisions."
-            "Limited to fundamental rights" -> "The Supreme Court may review laws only for violations of fundamental rights."
-            else -> "Judicial review shall be as determined by ordinary legislation."
-        }
+        val reviewText = constitutionData.judicialReviewScope
 
         return """
             <h2>CHAPTER FIVE: STRUCTURE OF THE STATE</h2>
@@ -412,11 +427,11 @@ class PreviewActivity : AppCompatActivity() {
 
     private fun generateChapter8(): String {
         val provisions = constitutionData.educationalProvisions.joinToString(";\n") { "    $it" }
-        val budgetText = when (constitutionData.educationBudget) {
+        val budgetText = when (constitutionData.educationBudgetMin) {
             "No minimum" -> "No minimum percentage is specified."
-            "At least 5%" -> "Not less than 5% of the national budget."
-            "At least 10%" -> "Not less than 10% of the national budget."
-            "At least 15%" -> "Not less than 15% of the national budget."
+            "2%" -> "Not less than 2% of the national budget."
+            "5%" -> "Not less than 5% of the national budget."
+            "8%" -> "Not less than 8% of the national budget."
             else -> ""
         }
 
@@ -504,9 +519,8 @@ class PreviewActivity : AppCompatActivity() {
     }
 
     private fun getTargetFile(): File? {
-        val username = constitutionData.creatorName.replace(Regex("[^a-zA-Z0-9]"), "_")
         val regNo = constitutionData.registerNumber.replace(Regex("[^a-zA-Z0-9]"), "_")
-        val fileName = "$regNo.$username.pdf"
+        val fileName = "${if (regNo.isEmpty()) "constitution" else regNo}.pdf"
         
         val directory = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
         if (directory == null) return null
@@ -534,15 +548,8 @@ class PreviewActivity : AppCompatActivity() {
     }
 
     private fun sharePDF() {
-        val file = getTargetFile()
-        if (file == null) return
-        
-        if (!file.exists()) {
-            generatePDF { generatedFile ->
-                if (generatedFile != null) shareFile(generatedFile)
-            }
-        } else {
-            shareFile(file)
+        generatePDF { generatedFile ->
+            if (generatedFile != null) shareFile(generatedFile)
         }
     }
 
